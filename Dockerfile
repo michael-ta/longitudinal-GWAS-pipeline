@@ -140,8 +140,8 @@ RUN set -ex; \
 		\) -exec rm -rf '{}' +; \
 	rm -f get-pip.py
 
-#ARG PLINK2_URL="https://s3.amazonaws.com/plink2-assets/alpha2/plink2_linux_x86_64.zip"
-ARG PLINK2_DEV_URL="https://s3.amazonaws.com/plink2-assets/plink2_linux_x86_64_20210701.zip"
+ARG PLINK2_URL="https://s3.amazonaws.com/plink2-assets/alpha2/plink2_linux_x86_64.zip"
+#ARG PLINK2_DEV_URL="https://s3.amazonaws.com/plink2-assets/plink2_linux_x86_64_20210701.zip"
 ARG PLINK_URL="https://s3.amazonaws.com/plink1-assets/plink_linux_x86_64_20210606.zip"
 ARG GCTA_URL="https://cnsgenomics.com/software/gcta/bin/gcta_1.93.2beta.zip"
 # setup plink
@@ -154,7 +154,7 @@ RUN set -ex; \
   \
   mkdir tools; \
   cd tools; \
-  wget -O plink2_linux_x86_64.zip "$PLINK2_DEV_URL"; \
+  wget -O plink2_linux_x86_64.zip "$PLINK2_URL"; \
   unzip plink2_linux_x86_64.zip; \
   \
   wget -O plink_linux_x86_64_20210606.zip "$PLINK_URL"; \
