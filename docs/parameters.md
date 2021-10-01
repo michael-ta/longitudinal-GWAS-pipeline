@@ -25,12 +25,14 @@ This parameter is used to specify the paths of the genotyping files. The pipelin
 uncompressed (\*.vcf) or compressed (\*.vcf.gz) files. Genotype files should be shredded at the chromosome level
 and each file should contain the chromosome number prefix with 'chr' case insensitive.
 
+_Note:_ The inclusion of  wildcard (\*) in the path requires the use of quotes
+
 Acceptable filenames
 
 ```text
-/path/to/dataset_prefix_chr*.vcf
-/path/to/dataset_chr*_suffix.vcf.gz
-/path/to/chr*.vcf
+--input_vcf "/path/to/dataset_prefix_chr*.vcf"
+--input_vcf "/path/to/dataset_chr*_suffix.vcf.gz"
+--input_vcf "/path/to/chr*.vcf"
 ```
 
 ## --longitudinal_flag
