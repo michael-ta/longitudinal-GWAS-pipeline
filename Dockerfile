@@ -140,27 +140,26 @@ RUN set -ex; \
 		\) -exec rm -rf '{}' +; \
 	rm -f get-pip.py
 
-ARG PLINK2_URL="https://s3.amazonaws.com/plink2-assets/alpha2/plink2_linux_x86_64.zip"
+#ARG PLINK2_URL="https://s3.amazonaws.com/plink2-assets/alpha2/plink2_linux_x86_64.zip"
 #ARG PLINK2_DEV_URL="https://s3.amazonaws.com/plink2-assets/plink2_linux_x86_64_20210701.zip"
-ARG PLINK_URL="https://s3.amazonaws.com/plink1-assets/plink_linux_x86_64_20210606.zip"
-ARG GCTA_URL="https://cnsgenomics.com/software/gcta/bin/gcta_1.93.2beta.zip"
+#ARG PLINK_URL="https://s3.amazonaws.com/plink1-assets/plink_linux_x86_64_20210606.zip"
+#ARG GCTA_URL="https://cnsgenomics.com/software/gcta/bin/gcta_1.93.2beta.zip"
 # setup plink
+
+## Freeze version of tools used
+COPY bin/plink2_linux_x86_64_20210920.zip /root/plink2_linux_x86_64.zip
+COPY bin/gcta_1.93.2beta.zip /root/gcta_1.93.2beta.zip
+COPY bin/plink_linux_x86_64_20210606.zip /root/plink_linux_x86_64.zip
+
 RUN set -ex; \
   \
   savedAptMark="$(apt-mark showmanual)"; \
   apt-get update; \
-  apt-get install -y --no-install-recommends wget \
+  apt-get install -y --no-install-recommends \
   unzip ;\
   \
-  mkdir tools; \
-  cd tools; \
-  wget -O plink2_linux_x86_64.zip "$PLINK2_URL"; \
   unzip plink2_linux_x86_64.zip; \
-  \
-  wget -O plink_linux_x86_64_20210606.zip "$PLINK_URL"; \
-  unzip plink_linux_x86_64_20210606.zip; \
-  \
-  wget -O gcta_1.93.2beta.zip "$GCTA_URL"; \
+  unzip plink_linux_x86_64.zip; \
   unzip gcta_1.93.2beta.zip; \
  	\
   apt-mark auto '.*' > /dev/null; \
@@ -173,7 +172,9 @@ RUN set -ex; \
   mv prettify /usr/local/bin; \
   mv gcta_1.93.2beta/gcta64 /usr/local/bin; \
   \
-  cd .. && rm -rf tools;
+  rm -rf plink2_linux_x86_64.zip; \
+  rm -rf plink_linux_x86_64.zip; \
+  rm -rf gcta_1.93.2beta.zip
 
 ARG BCFTOOLS_URL="https://github.com/samtools/bcftools/releases/download/1.11/bcftools-1.11.tar.bz2"
 ENV BCFTOOLS_PLUGINS /usr/src/bcftools-1.11/plugins
@@ -206,7 +207,29 @@ RUN set -ex; \
 	[ -z "$savedAptMark" ] || apt-mark manual $savedAptMark; \
 	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
 	rm -rf /var/lib/apt/lists/*
- 
+
+ARG METAL_META_URL="https://github.com/statgen/METAL/archive/refs/tags/2020-05-05.tar.gz"
+
+RUN set -ex; \
+  \
+  apt-get update; \
+  apt-get install -y --no-install-recommends zlib1g-dev; \
+  savedAptMark="$(apt-mark showmanual)"; \
+  apt-get install -y --no-install-recommends wget \
+  gcc \
+  g++ \
+  make \
+  cmake; \
+  wget -O metal_20200505.tar.gz "$METAL_META_URL"; \
+  tar -xzf metal_20200505.tar.gz -C /usr/src/ \
+  cd /usr/src/METAL-2020-05-05; \
+  mkdir build && cd build; \
+  cmake -DCMAKE_BUILD_TYPE=Release ..; \
+  make; \
+  make test; \
+  make install; \ 
+  ln -s /usr/src/METAL-2020-05-05/build/bin/metal /usr/local/bin/metal 
+
 
 ARG LIFTOVER_URL="http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/liftOver"
 # setup liftOver
