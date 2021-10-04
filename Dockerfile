@@ -158,6 +158,7 @@ RUN set -ex; \
   apt-get install -y --no-install-recommends \
   unzip ;\
   \
+  cd /root; \
   unzip plink2_linux_x86_64.zip; \
   unzip plink_linux_x86_64.zip; \
   unzip gcta_1.93.2beta.zip; \
