@@ -18,8 +18,8 @@
 # -- Project information -----------------------------------------------------
 
 project = 'Longitudinal-GWAS-Pipeline'
-copyright = '2021, Michael Ta, Dan Vitale, Hirotaka Iwaki'
-author = 'Michael Ta, Dan Vitale, Hirotaka Iwaki'
+copyright = '2021, Data Technica International'
+author = "Michael Ta, Hirotaka Iwaki, Dan Vitale, Mike Nalls, Hampton Leonard, Faraz Faghri"
 
 # The full version, including alpha/beta/rc tags
 release = '2021'
