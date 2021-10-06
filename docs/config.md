@@ -25,7 +25,6 @@ env {
   GWAS_OUTPUT_DIR = '/files/longGWAS_pipeline/results'
   GWAS_STORE_DIR = '/files/longGWAS_pipeline/cache'
   ADDI_QC_PIPELINE = '/usr/src/ADDI-GWAS-QC-pipeline/addi_qc_pipeline.py'
-  NXF_WORK = '/files/longGWAS_pipeline/work'
 }
 
 executor {
@@ -41,7 +40,6 @@ docker {
 
 process {
   cpus = 2
-  workDir = '/files/longGWAS_pipeline/work'
 
   withLabel: small {
     cpus = 2
