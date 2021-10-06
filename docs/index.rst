@@ -20,5 +20,6 @@ Visit the Getting Started page below or from the sidebar to see instructions for
    config.md
    parameters.md
    file_formats.md
+   software.md
    examples.md
 
