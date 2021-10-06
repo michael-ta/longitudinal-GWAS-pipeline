@@ -38,20 +38,41 @@ pipeline. After cloning the repository, you can build the image with
 
 ```sh
 cd longitudinal-GWAS-pipeline
-sudo docker build --build-arg BUILD_VAR=$(date +%Y%m%d-%H%M%S) -t gwas-pipeline Docker/
+sudo docker build --build-arg BUILD_VAR=$(date +%Y%m%d-%H%M%S) -t gwas-pipeline .
 ```
 
-The parameter `BUILD_VAR` sets the environment variable `IMAGE_BUILD_VAR` to the date and time of the current build.
-This can be used to track different versions of the Docker image once built. Using the default `nextflow.config` 
-the pipeline will launch containers using a local image with the label `gwas-pipeline`. This behavior can be 
-adjusted by changing the `nextflow.config` or setting the option at runtime. For more details, see the Nextflow 
-Configuration page.
+The parameter `BUILD_VAR` sets the environment variable `IMAGE_BUILD_VAR` to the date and time of the current 
+build. This can be used to track different versions of the Docker image once built. Using the default 
+`nextflow.config` the pipeline will launch containers using a local image with the label `gwas-pipeline`. This 
+behavior can be adjusted by changing the `nextflow.config` or setting the option at runtime. For more details, 
+see the Nextflow Configuration page.
+
+_Note:_ invoking sudo is not necessary if the Docker user has been previously added to sudoers
 
 ## Basic Usage
 
-Once the Docker image is built, the pipeline can be called by running the following command within the local cloned
-repository
+Once the Docker image is built, the pipeline can be called by running the following command within the local 
+cloned irepository
 
 ```sh
-sudo nextflow gwas-pipeline.nf --input_vcf "example/data/genetic/*.vcf.gz"
+sudo nextflow gwas-pipeline.nf \
+  --input_vcf "example/data/genetic/*.vcf.gz" \
+  --covarfile "examples/basic/covar.tsv" \
+  --phenofile "examples/basic/pheno.tsv"
+```
+
+The outputs from the pipeline will be saved to the directory defined by the environment variable 
+`GWAS_OUTPUT_DIR` in the Nextflow configuration. Within the output directory you'll see the following folders
+and files after running the pipeline on the basic example files
+
+```text
+results/
+  cor_timestamp/
+    *.linear
+    plots/
+      *.
+
+cache/
+  p1_run_cache/
+  p2_qc_pipeline_cache/ 
 ```
