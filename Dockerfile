@@ -250,8 +250,8 @@ RUN set -ex; \
   chmod +x /usr/local/bin/liftOver
 
 ARG UCSC_hg38_REF="https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.fa.gz"
-ARG UCSC_hg18_CHAIN="https://hgdownload.cse.ucsc.edu/goldenpath/hg19/liftOver/hg19ToHg38.over.chain.gz"
-ARG UCSC_hg19_CHAIN="https://hgdownload.cse.ucsc.edu/goldenpath/hg18/liftOver/hg18ToHg38.over.chain.gz"
+ARG UCSC_hg18_CHAIN="https://hgdownload.cse.ucsc.edu/goldenpath/hg18/liftOver/hg18ToHg38.over.chain.gz"
+ARG UCSC_hg19_CHAIN="https://hgdownload.cse.ucsc.edu/goldenpath/hg19/liftOver/hg19ToHg38.over.chain.gz"
 ENV GWAS_RESOURCE_DIR="/srv/GWAS-Pipeline"
 ENV GWAS_OUTPUT_DIR="/mnt/gwas_results"
 ENV ADDI_QC_PIPELINE="/usr/src/ADDI-GWAS-QC-pipeline/addi_qc_pipeline.py"
