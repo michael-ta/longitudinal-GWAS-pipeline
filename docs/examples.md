@@ -11,7 +11,7 @@ Second run the pipeline for cross-sectional analysis using the following command
 
 ```sh
 sudo nextflow gwas-pipeline.nf \
-  --input_vcf "example/genotype/*.vcf.gz" \
+  --input_vcf "example/genotype/*.vcf" \
   --phenofile example/phenotype.cs.tsv \
   --covarfile example/covariates.tsv \
   --assembly "hg19"
@@ -21,7 +21,7 @@ Run the pipeline for longitudinal analysis
 
 ```sh
 sudo nextflow gwas-pipeline.nf \
-  --input_vcf "example/genotype/*.vcf.gz" \
+  --input_vcf "example/genotype/*.vcf" \
   --phenofile example/phenotype.lt.tsv \
   --covarfile example/covariates.tsv \
   --assembly "hg19" \
