@@ -177,7 +177,7 @@ process p2_qc_pipeline {
     //path ref_labels, stageAs: "ancestry_ref_labels.txt" from local_ref_labels
     //file "*" from ref_panel_files.collect()
   output:
-    file "${params.ancestry}_${params.out}_samplelist_p2out.h5" into p2_out_file
+    file "${params.ancestry}_${params.dataset}_samplelist_p2out.h5" into p2_out_file
     file "*.html" into p2_out_html
     file "*.png" into p2_out_png
 
@@ -189,7 +189,7 @@ process p2_qc_pipeline {
       --ref "/srv/GWAS-Pipeline/References/ref_panel/1kg_ashkj_ref_panel_gp2_pruned_hg38_newids" \
       --ref_labels "/srv/GWAS-Pipeline/References/ref_panel/ancestry_ref_labels.txt" \
       --pop "${params.ancestry}" \
-      --out "${params.ancestry}_${params.out}_samplelist_p2out"
+      --out "${params.ancestry}_${params.dataset}_samplelist_p2out"
     """
 }
 
@@ -294,7 +294,7 @@ process p3_export_rawfile {
            --pheno-col-nums 4 \
            --hwe 1e-6 \
            --geno ${params.missing_geno_rate} \
-           --out ${outfile}  \
+           --out "${outfile}"  \
            --threads ${task.cpus}
     """
 }
