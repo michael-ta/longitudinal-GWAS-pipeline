@@ -223,6 +223,7 @@ RUN set -ex; \
   cmake; \
   wget -O metal_20200505.tar.gz "$METAL_META_URL"; \
   tar -xzf metal_20200505.tar.gz -C /usr/src/; \
+  rm metal_20200505.tar.gz; \
   cd /usr/src/METAL-2020-05-05; \
   mkdir build && cd build; \
   cmake -DCMAKE_BUILD_TYPE=Release ..; \
