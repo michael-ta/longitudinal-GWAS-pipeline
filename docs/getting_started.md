@@ -56,7 +56,7 @@ cloned irepository
 
 ```sh
 sudo nextflow gwas-pipeline.nf \
-  --input_vcf "example/data/genetic/*.vcf.gz" \
+  --input_vcf "example/data/genetic/*.vcf" \
   --covarfile "examples/basic/covar.tsv" \
   --phenofile "examples/basic/pheno.tsv"
 ```
