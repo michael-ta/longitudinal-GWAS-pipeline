@@ -18,6 +18,7 @@ params.covarfile = "data/covariates.tsv"
 params.phenofile = "data/phenotypes.longitudinal.tsv"
 params.kinship = "0.177"
 params.missing_geno_rate = "0.05"
+params.minor_allele_freq = "0.05"
 
 params.covariates = "SEX PC1 PC2 PC3"
 params.model = ""
@@ -142,6 +143,7 @@ plink_prefix = "All_chr_${params.dataset}_p2in"
 
 process p2_merge_list {
   scratch true
+  storeDir "${GWAS_STORE_DIR}/p2_merged_cache/${params.dataset}"
 
   label 'small'
 
@@ -163,6 +165,9 @@ process p2_merge_list {
     """
 }
 
+p2_in_plink2
+  .into { p2_qcin_plink2; p3_pcain_plink2 }
+
 process p2_qc_pipeline {
   scratch true
 
@@ -173,7 +178,7 @@ process p2_qc_pipeline {
 
   input:
     set file("${plink_prefix}.bed"), file("${plink_prefix}.fam"), file("${plink_prefix}.bim") from p2_in_plink1
-    set file("${plink_prefix}.pgen"), file("${plink_prefix}.pvar"), file("${plink_prefix}.psam") from p2_in_plink2
+    set file("${plink_prefix}.pgen"), file("${plink_prefix}.pvar"), file("${plink_prefix}.psam") from p2_qcin_plink2
     //path ref_labels, stageAs: "ancestry_ref_labels.txt" from local_ref_labels
     //file "*" from ref_panel_files.collect()
   output:
@@ -230,8 +235,8 @@ process p3_cohort_samplelist {
       samples = data_df[ (data_df.IID.isin(ancestry_df.IID)) &
                          (data_df[study_id_colname] == cohort) &
                         ~(data_df.IID.isin(outlier_df.IID)) ].copy(deep=True)
-      samples = samples.merge(pcs_df, left_on="IID", right_on="#IID", how="inner")
-      samples.drop(columns="#IID", inplace=True)
+      #samples = samples.merge(pcs_df, left_on="IID", right_on="#IID", how="inner")
+      #samples.drop(columns="#IID", inplace=True)
       r = kin_df[(kin_df['#IID1'].isin(samples.IID)) & (kin_df.IID2.isin(samples.IID))].copy()
       samples = samples[~samples.IID.isin(r.IID2)].copy()
       samples.to_csv(f"{ancestry}_{cohort}_filtered.tsv", sep="\t", index=False)
@@ -240,11 +245,81 @@ process p3_cohort_samplelist {
       print(f'Samples remaining = {len(samples)}')
       print('')
 
-    time.sleep(10)
+    time.sleep(5)
     """
 }
 
-gwas_samplelist
+process p3_cohort_pca {
+  scratch true
+  label 'medium'
+   
+  storeDir "${GWAS_STORE_DIR}/p3_cohort_pca_cache"
+  
+  input:
+    each file(samplelist) from gwas_samplelist.flatten()
+    set file("${plink_prefix}.pgen"), file("${plink_prefix}.pvar"), file("${plink_prefix}.psam") from p3_pcain_plink2
+    
+  output:
+    tuple file(samplelist), file("${cohort_prefix}.pca.eigenvec") into p3_cohort_pca_out
+   
+  script:
+    def m = []
+    def cohort = ""
+    cohort = samplelist.getName()
+    m = cohort =~ /(.*)_filtered.tsv/
+    cohort = m[0][1]
+    cohort_prefix = "${cohort}"
+    
+    """
+    plink2 \
+          --indep-pairwise 50 .2 \
+          --maf ${params.minor_allele_freq} \
+          --keep ${samplelist} \
+          --out ${cohort}.pca \
+          --pca 10 \
+          --threads ${task.cpus} \
+          --pfile "${plink_prefix}"
+    """
+}
+
+
+process p3_merge_pca {
+  scratch true
+  label 'small'
+  
+  input:
+    
+    set file(samplelist), file(cohort_pca) from p3_cohort_pca_out
+    
+  output:
+    file "${params.ancestry}_*_filtered.pca.tsv" into gwas_samplelist_pca
+   
+   script:
+     
+     """
+     #!/usr/bin/env python3
+     import pandas as pd
+     import time   
+     import os
+     
+     print(os.listdir())
+     sample_fn = "${samplelist.getName()}"
+     cohort = sample_fn[:-(len('_filtered.tsv'))]
+     pc_fn = cohort + '.pca.eigenvec'
+
+     print(pc_fn, cohort)
+     pc_df = pd.read_csv(pc_fn, sep="\t")
+     samples_df = pd.read_csv(sample_fn, sep="\t")
+     pc_df.rename(columns={"#IID": "IID"}, inplace=True)
+     samples_df = samples_df.merge(pc_df, on="IID")
+     
+     samples_df.to_csv(cohort + '_filtered.pca.tsv', sep="\t", index=False)
+     time.sleep(5)
+     """
+}
+
+
+gwas_samplelist_pca
   .into { gwas_samplelist_plink; gwas_samplelist_gallop }
 
 
@@ -264,7 +339,7 @@ process p3_export_rawfile {
     def m = []
     def cohort = ""
     cohort = samplelist.getName()
-    m = cohort =~ /(.*)_filtered.tsv/
+    m = cohort =~ /(.*)_filtered.pca.tsv/
     cohort = m[0][1]
 
     m = []
@@ -369,7 +444,7 @@ process p3_format_gwas_plink {
     def m = []
     def cohort = ""
     cohort = samplelist.getName()
-    m = cohort =~ /(.*)_filtered.tsv/
+    m = cohort =~ /(.*)_filtered.pca.tsv/
     outfile = "${m[0][1]}"
 
     def pheno_name = "y"
@@ -456,8 +531,10 @@ process p3_gwas_plink{
     """
 }
 
+
 process p3_gwas_viz {
   scratch true
+  label 'medium'
 
   publishDir "${GWAS_OUTPUT_DIR}/${params.out}_${params.datetime}/Plots", mode: 'copy', overwrite: true
 
@@ -474,6 +551,7 @@ process p3_gwas_viz {
     import os
     from qmplot import manhattanplot
     from qmplot import qqplot
+    from multiprocessing import Pool
 
     files = list(filter(lambda x: os.path.splitext(x)[-1] in ['.gallop', '.linear'], os.listdir()))
     dfs = []
@@ -481,6 +559,7 @@ process p3_gwas_viz {
     # group by phenotype
     lt_flag = "${params.longitudinal_flag}" == "true"
     suffix = "${params.out}"
+    threads = int("${task.cpus}")
 
     def plot_summary_stats(data, cohort, outcome, lt_flag=False):
       xtick = set(['chr' + i for i in list(map(str, range(1, 10))) + ['11', '13', '15', '18', '21', 'X']])
@@ -540,14 +619,22 @@ process p3_gwas_viz {
       except KeyError:
         plot_df[f'{cohort}+{pheno}'] = [f]
 
+    def read_table(fn):
+      'converts a filename to a pandas dataframe'
+      return pd.read_table(fn, sep="\t")
 
     for cohort in plot_df.keys():
-      dfs = []
+      df = None
       c, outcome = cohort.split('+')
-      for f in plot_df[cohort]:
-        dfs.append(pd.read_table(f, sep="\t"))
       
-      df = pd.concat(dfs)
+      with Pool(processes=threads) as pool:
+
+        # have your pool map the file names to dataframes
+        df_list = pool.map(read_table, plot_df[cohort])
+
+        # reduce the list of dataframes to a single dataframe
+        df = pd.concat(df_list, ignore_index=True)
+      
       df = df.dropna(how="any", axis=0)  # clean data
       df['chr_order'] = df['#CHROM'].str.replace('chr', '')
       df['chr_order'] = df['chr_order'].astype(int)
@@ -557,4 +644,3 @@ process p3_gwas_viz {
       plot_summary_stats(data=df, cohort=f'{c}.{suffix}', outcome=outcome, lt_flag=lt_flag)
     """
 }
-
