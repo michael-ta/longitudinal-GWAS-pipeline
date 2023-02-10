@@ -18,6 +18,7 @@ RUN set -eux; \
 	; \
 	rm -rf /var/lib/apt/lists/*
 
+
 ENV GPG_KEY E3FF2839C048B25C084DEBE9B26995E310250568
 ENV PYTHON_VERSION 3.8.11
 
@@ -49,6 +50,9 @@ RUN set -ex \
 # as of Stretch, "gpg" is no longer included by default
 		$(command -v gpg > /dev/null || echo 'gnupg dirmngr') \
 	\
+# add R gpg keys
+  &&gpg --keyserver keyserver.ubuntu.com --recv-key E298A3A825C0D65DFD57CBB651716619E084DAB9 \
+  && gpg -a --export E298A3A825C0D65DFD57CBB651716619E084DAB9 | apt-key add - \
 	&& wget -O python.tar.xz "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz" \
 	&& wget -O python.tar.xz.asc "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz.asc" \
 	&& export GNUPGHOME="$(mktemp -d)" \
@@ -98,6 +102,15 @@ RUN set -ex \
 	&& rm -rf /var/lib/apt/lists/* \
 	\
 	&& python3 --version
+
+
+#RUN printf "deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran40/" > /etc/apt/sources.list
+#RUN set -ex \
+#  && apt-get update \
+#  && DEBIAN_FRONTEND=noninteractive \
+#  && apt-get install -y \
+#    r-base \
+    
 
 RUN cd /usr/local/bin \
 	&& ln -s idle3 idle \
@@ -210,6 +223,7 @@ RUN set -ex; \
 	rm -rf /var/lib/apt/lists/*
 
 ARG METAL_META_URL="https://github.com/statgen/METAL/archive/refs/tags/2020-05-05.tar.gz"
+ARG BEDTOOLS_URL="https://github.com/arq5x/bedtools2/releases/download/v2.30.0/bedtools.static.binary"
 
 RUN set -ex; \
   \
@@ -230,8 +244,11 @@ RUN set -ex; \
   make; \
   make test; \
   make install; \ 
-  ln -s /usr/src/METAL-2020-05-05/build/bin/metal /usr/local/bin/metal 
-
+  ln -s /usr/src/METAL-2020-05-05/build/bin/metal /usr/local/bin/metal; \
+  cd /usr/local/bin; \
+  wget -O bedtools "$BEDTOOLS_URL"; \
+  chmod +x bedtools
+  
 
 ARG LIFTOVER_URL="http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/liftOver"
 # setup liftOver
@@ -283,11 +300,14 @@ ARG BUILD_VER=""
 
 COPY References/ancestry_ref_panel.tar.gz /root
 COPY Scripts/process1.sh $GWAS_RESOURCE_DIR/References/Scripts
+COPY Scripts/survival.R $GWAS_RESOURCE_DIR/References/Scripts
+
 
 RUN set -ex; \
   tar -xvzf /root/ancestry_ref_panel.tar.gz -C $GWAS_RESOURCE_DIR/References/ref_panel; \
   rm /root/ancestry_ref_panel.tar.gz; \
-  chmod +x $GWAS_RESOURCE_DIR/References/Scripts/process1.sh
+  chmod +x $GWAS_RESOURCE_DIR/References/Scripts/process1.sh; \
+  chmod +x $GWAS_RESOURCE_DIR/References/Scripts/survival.R
 
 ENV IMAGE_BUILD_VER=$BUILD_VER
 ARG PY_GALLOP_URL="https://github.com/michael-ta/GALLOP-Python"
@@ -332,3 +352,21 @@ RUN set -ex; \
 	[ -z "$savedAptMark" ] || apt-mark manual $savedAptMark; \
 	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
 	rm -rf /var/lib/apt/lists/*
+
+RUN set -ex \
+  && savedAptMark="$(apt-mark showmanual)" \
+	&& apt-get update \
+  && DEBIAN_FRONTEND=noninteractive \
+  apt-get install -y --no-install-recommends \
+    software-properties-common \
+    dirmngr \
+  && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9 \
+  && add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran40/'
+
+RUN set -ex \
+	&& savedAptMark="$(apt-mark showmanual)" \
+	&& apt-get update \
+  && DEBIAN_FRONTEND=noninteractive \
+  apt-get install -y --no-install-recommends \
+    r-base \
+  && Rscript -e 'install.packages(c("survival", "optparse"), repos="https://cloud.r-project.org")'
