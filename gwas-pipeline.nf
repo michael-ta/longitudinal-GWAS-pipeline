@@ -514,7 +514,7 @@ process p3_cohort_pca {
     plink2 \
           --keep ${samplelist} \
           --out ${cohort}.pca \
-          --extract ${cohort}.pca.prune.in \
+          --extract ${cohort}.ld.prune.in \
           --pca 10 \
           --threads ${task.cpus} \
           --memory ${task.memory.toMega()} \
@@ -571,7 +571,7 @@ p1_run_processed_ch
 p1_run_processed_ch_old
   .groupTuple(by: 0)
   .flatten()
-  .collate(4)
+  .collate(5)
   .into { p3_in_files_gallop; p3_in_files_plink }
   
 p1_run_processed_ch_new
@@ -839,7 +839,7 @@ process p3_gwas_plink{
   publishDir "${OUTPUT_DIR}/${params.out}_${params.datetime}/logs", mode: 'copy', overwrite: true, pattern: "*.log"
 
   input:
-    set val(fSimple), file(pgen), file(psam), file(pvar) from p3_in_files_plink
+    set val(fSimple), file(plog), file(pgen), file(psam), file(pvar) from p3_in_files_plink
     each samplelist from plink_samplelist
   output:
     file "*.linear" into gwas_results
