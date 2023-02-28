@@ -304,7 +304,7 @@ COPY Scripts/survival.R $GWAS_RESOURCE_DIR/References/Scripts
 
 
 RUN set -ex; \
-  tar -xvzf /root/ancestry_ref_panel.tar.gz -C $GWAS_RESOURCE_DIR/References/ref_panel; \
+  tar -xvzf /root/ancestry_ref_panel.tar.gz -C $GWAS_RESOURCE_DIR/References/ref_panel --no-same-owner; \
   rm /root/ancestry_ref_panel.tar.gz; \
   chmod +x $GWAS_RESOURCE_DIR/References/Scripts/process1.sh; \
   chmod +x $GWAS_RESOURCE_DIR/References/Scripts/survival.R
