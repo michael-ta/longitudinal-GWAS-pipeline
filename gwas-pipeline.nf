@@ -694,7 +694,7 @@ process p3_gwas_coxph {
 
   input:
     set val(fSimple), file(samplelist), file(rawfile) from gwas_rawfile_coxph
-    path x, stageAs: 'phenotypes.tsv' from "${params.phenofile}"
+    path x, stageAs: 'phenotypes.tsv' from "${params.pheno_name_fil}"
   output:
     tuple env(KEY), file("*.coxph") into coxph_results
   when:
@@ -734,7 +734,7 @@ process p3_gwas_gallop {
 
   input:
     set val(fSimple), file(samplelist), file(rawfile) from gwas_rawfile_gallop
-    path x, stageAs: 'phenotypes.tsv' from "${params.phenofile}"
+    path x, stageAs: 'phenotypes.tsv' from "${params.pheno_name_fil}"
   output:
     tuple env(KEY), file("*.gallop") into gallop_results
   when:
@@ -788,7 +788,7 @@ process p3_format_gwas_plink {
 
   input:
     val samplelist from gwas_samplelist_plink.flatten()
-    path x, stageAs: 'phenotypes.tsv' from "${params.phenofile}"
+    path x, stageAs: 'phenotypes.tsv' from "${params.pheno_name_fil}"
   output:
     file "*_analyzed.tsv" optional true into plink_samplelist
   when:
