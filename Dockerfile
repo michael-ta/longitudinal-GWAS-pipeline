@@ -370,3 +370,13 @@ RUN set -ex \
   apt-get install -y --no-install-recommends \
     r-base \
   && Rscript -e 'install.packages(c("survival", "optparse"), repos="https://cloud.r-project.org")'
+
+# Add java/jre-17 installation, and install local on /usr/bin/local
+RUN set -eux; \
+        apt-get update; \
+        apt-get install -y --no-install-recommends \
+          openjdk-17-jre-headless; \
+        apt-get -y install curl \
+        && curl -s https://get.nextflow.io | bash \
+        && chmod +x nextflow \
+        && mv nextflow /usr/local/bin
