@@ -636,8 +636,8 @@ p3_plink_chunks = p3_plink_chunks
 p3_plink_chunks = p3_in_files_gallop
                   .cross(p3_plink_chunks)
                   .flatten()
-                  .collate(6)
-                  .map{ it -> tuple(it[0], it[1], it[2], it[3], it[5]) }            
+                  .collate(7)
+                  .map{ it -> tuple(it[0], it[1], it[2], it[3], it[4], it[6]) } 
 
 
 process p3_export_rawfile {
@@ -646,7 +646,7 @@ process p3_export_rawfile {
   publishDir "${OUTPUT_DIR}/${params.out}_${params.datetime}/logs", mode: 'copy', overwrite: true, pattern: "*.log"
 
   input:
-    set val(fSimple), file(pgen), file(psam), file(pvar), file(plink_chunk) from p3_plink_chunks
+    set val(fSimple), file(plog), file(pgen), file(psam), file(pvar), file(plink_chunk) from p3_plink_chunks
     each file(samplelist) from gwas_samplelist_gallop.flatten()
   output:
     tuple val(fSimple), file(samplelist), file('*.raw') into gwas_rawfile 
