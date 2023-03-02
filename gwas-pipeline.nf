@@ -888,6 +888,7 @@ process p3_gwas_plink{
 p3_processed = gallop_results.mix(coxph_results)
               .groupTuple()
               .map{ it[1] }
+              .flatten()
               .collectFile(keepHeader: true)
               
 process save_outputs {
