@@ -964,20 +964,20 @@ process p3_gwas_viz {
         plt.savefig(f"{cohort}_{outcome}_qq_intercept.gallop.png", dpi=300)
   
       else:
-      f, ax = plt.subplots(figsize=(6, 6), facecolor="w", edgecolor="k")
-      manhattanplot(data=data,
-                    title=f"Manhattan Intercept {cohort} {outcome}",
-                    pv="P", ax = ax,
-                    xtick_label_set=xtick)
-      plt.savefig(f"{cohort}_{outcome}_manhattan_intercept.gallop.png", dpi=300)
-      f, ax = plt.subplots(figsize=(6, 6), facecolor="w", edgecolor="k")
-      qqplot(data=data["P"],
-            marker="o",
-            title=f"QQ Intercept {cohort} {outcome}",
-            xlabel=r"Expected -log(P)",
-            ylabel=r"Observed -log(P)",
-            ax=ax)
-    plt.savefig(f"{cohort}_{outcome}_qq_intercept.gallop.png", dpi=300)
+        f, ax = plt.subplots(figsize=(6, 6), facecolor="w", edgecolor="k")
+        manhattanplot(data=data,
+                      title=f"Manhattan Intercept {cohort} {outcome}",
+                      pv="P", ax = ax,
+                      xtick_label_set=xtick)
+        plt.savefig(f"{cohort}_{outcome}_manhattan_intercept.gallop.png", dpi=300)
+        f, ax = plt.subplots(figsize=(6, 6), facecolor="w", edgecolor="k")
+        qqplot(data=data["P"],
+               marker="o",
+               title=f"QQ Intercept {cohort} {outcome}",
+               xlabel=r"Expected -log(P)",
+               ylabel=r"Observed -log(P)",
+               ax=ax)
+        plt.savefig(f"{cohort}_{outcome}_qq_intercept.gallop.png", dpi=300)
 
     plot_df = dict()
     for f in files:
