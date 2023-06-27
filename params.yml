@@ -1,0 +1,30 @@
+---
+# Input files
+input: /home/amcalejandro/Data/WorkingDirectory/Development_Stuff/LONGWAS-NEXTFLOW/workdir/example/genotype/chr*.vcf
+covarfile: /home/amcalejandro/Data/WorkingDirectory/Development_Stuff/LONGWAS-NEXTFLOW/workdir/example/covariates.tsv
+phenofile: /home/amcalejandro/Data/WorkingDirectory/Development_Stuff/LONGWAS-NEXTFLOW/workdir/example/phenotype.surv.tsv
+
+#Variables names
+pheno_name: surv_y
+covariates: "SEX age_at_baseline"
+
+# Model variables
+longitudinal_flag: false
+survival_flag: true
+params.linear_flag: false
+params.chunk_flag: false
+
+# Parameters for genetic QC
+params.r2thres: -9
+params.minor_allele_freq: "0.05"
+params.minor_allele_ct: "20"
+params.kinship: "0.177"
+params.ancestry: "EUR"
+params.assembly: "hg38"
+assembly: "hg19"
+
+#Identifier for the input genotype files - useful to cache results
+dataset: "V1"
+
+# Generate manhattan with result files
+mh_plot: true
