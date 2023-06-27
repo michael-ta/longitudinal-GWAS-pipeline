@@ -1,0 +1,101 @@
+Jun-04 13:07:25.832 [main] DEBUG nextflow.cli.Launcher - $> nextflow run main.nf
+Jun-04 13:07:25.936 [main] INFO  nextflow.cli.CmdRun - N E X T F L O W  ~  version 22.10.7
+Jun-04 13:07:25.976 [main] DEBUG nextflow.plugin.PluginsFacade - Setting up plugin manager > mode=prod; embedded=false; plugins-dir=/home/amcalejandro/.nextflow/plugins; core-plugins: nf-amazon@1.11.4,nf-azure@0.14.2,nf-codecommit@0.1.2,nf-console@1.0.4,nf-ga4gh@1.0.4,nf-google@1.4.5,nf-tower@1.5.6,nf-wave@0.5.4
+Jun-04 13:07:25.993 [main] INFO  org.pf4j.DefaultPluginStatusProvider - Enabled plugins: []
+Jun-04 13:07:25.994 [main] INFO  org.pf4j.DefaultPluginStatusProvider - Disabled plugins: []
+Jun-04 13:07:26.000 [main] INFO  org.pf4j.DefaultPluginManager - PF4J version 3.4.1 in 'deployment' mode
+Jun-04 13:07:26.017 [main] INFO  org.pf4j.AbstractPluginManager - No plugins
+Jun-04 13:07:26.097 [main] DEBUG nextflow.cli.CmdRun - Applied DSL=1 by probing script field
+Jun-04 13:07:26.125 [main] INFO  nextflow.cli.CmdRun - Launching `main.nf` [desperate_shirley] DSL1 - revision: e05bd6041e
+Jun-04 13:07:26.126 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins default=[]
+Jun-04 13:07:26.126 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins resolved requirement=[]
+Jun-04 13:07:26.142 [main] DEBUG nextflow.secret.LocalSecretsProvider - Secrets store: /home/amcalejandro/.nextflow/secrets/store.json
+Jun-04 13:07:26.157 [main] DEBUG nextflow.secret.SecretsLoader - Discovered secrets providers: [nextflow.secret.LocalSecretsProvider@a10c1b5] - activable => nextflow.secret.LocalSecretsProvider@a10c1b5
+Jun-04 13:07:26.277 [main] DEBUG nextflow.Session - Session UUID: 22d29ed6-29e9-4af0-9f71-df151a8b95e1
+Jun-04 13:07:26.278 [main] DEBUG nextflow.Session - Run name: desperate_shirley
+Jun-04 13:07:26.278 [main] DEBUG nextflow.Session - Executor pool size: 16
+Jun-04 13:07:26.302 [main] DEBUG nextflow.util.ThreadPoolBuilder - Creating thread pool 'FileTransfer' minSize=10; maxSize=48; workQueue=LinkedBlockingQueue[10000]; allowCoreThreadTimeout=false
+Jun-04 13:07:26.376 [main] DEBUG nextflow.cli.CmdRun - 
+  Version: 22.10.7 build 5853
+  Created: 18-02-2023 20:32 UTC (15:32 EDT)
+  System: Linux 5.15.90.1-microsoft-standard-WSL2
+  Runtime: Groovy 3.0.13 on OpenJDK 64-Bit Server VM 11.0.19+7-post-Ubuntu-0ubuntu120.04.1
+  Encoding: UTF-8 (UTF-8)
+  Process: 22880@amcalejandro [127.0.1.1]
+  CPUs: 16 - Mem: 15.5 GB (4.4 GB) - Swap: 4 GB (4 GB)
+Jun-04 13:07:26.409 [main] DEBUG nextflow.Session - Work-dir: /home/amcalejandro/Data/WorkingDirectory/Development_Stuff/LONGWAS-NEXTFLOW/MODULARIZATION/modules/geneticqc/work [ext2/ext3]
+Jun-04 13:07:26.415 [main] DEBUG nextflow.Session - Script base path does not exist or is not a directory: /home/amcalejandro/Data/WorkingDirectory/Development_Stuff/LONGWAS-NEXTFLOW/MODULARIZATION/modules/geneticqc/bin
+Jun-04 13:07:26.434 [main] DEBUG nextflow.executor.ExecutorFactory - Extension executors providers=[]
+Jun-04 13:07:26.454 [main] DEBUG nextflow.Session - Observer factory: DefaultObserverFactory
+Jun-04 13:07:26.491 [main] DEBUG nextflow.cache.CacheFactory - Using Nextflow cache factory: nextflow.cache.DefaultCacheFactory
+Jun-04 13:07:26.510 [main] DEBUG nextflow.util.CustomThreadPool - Creating default thread pool > poolSize: 17; maxThreads: 1000
+Jun-04 13:07:26.683 [main] DEBUG nextflow.Session - Session start
+Jun-04 13:07:27.936 [main] DEBUG nextflow.script.ScriptRunner - > Launching execution
+Jun-04 13:07:28.080 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jun-04 13:07:28.080 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jun-04 13:07:28.092 [main] DEBUG nextflow.executor.Executor - [warm up] executor > local
+Jun-04 13:07:28.101 [main] DEBUG n.processor.LocalPollingMonitor - Creating local task monitor for executor 'local' > cpus=16; memory=15.5 GB; capacity=16; pollInterval=100ms; dumpInterval=5m
+Jun-04 13:07:28.187 [main] DEBUG nextflow.Session - Session aborted -- Cause: Missing 'bind' declaration in input parameter
+Jun-04 13:07:28.209 [main] ERROR nextflow.cli.Launcher - @unknown
+java.lang.IllegalStateException: Missing 'bind' declaration in input parameter
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:490)
+	at org.codehaus.groovy.reflection.CachedConstructor.invoke(CachedConstructor.java:72)
+	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:105)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallConstructor(CallSiteArray.java:59)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:263)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
+	at nextflow.script.params.BaseInParam.lazyInit(BaseInParam.groovy:113)
+	at nextflow.script.params.BaseParam.init(BaseParam.groovy:102)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:193)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:61)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallCurrent(CallSiteArray.java:51)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:171)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:176)
+	at nextflow.script.params.BaseInParam.getInChannel(BaseInParam.groovy:54)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.codehaus.groovy.reflection.CachedMethod.invoke(CachedMethod.java:107)
+	at groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:323)
+	at org.codehaus.groovy.runtime.metaclass.MethodMetaProperty$GetBeanMethodMetaProperty.getProperty(MethodMetaProperty.java:76)
+	at org.codehaus.groovy.runtime.callsite.GetEffectivePogoPropertySite.getProperty(GetEffectivePogoPropertySite.java:85)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callGetProperty(AbstractCallSite.java:329)
+	at nextflow.script.params.InputsList.allScalarInputs(InputsList.groovy:59)
+	at nextflow.script.params.InputsList$allScalarInputs$0.call(Unknown Source)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:47)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:125)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:130)
+	at nextflow.processor.TaskProcessor.run(TaskProcessor.groovy:395)
+	at nextflow.processor.TaskProcessor$run.call(Unknown Source)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:47)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:125)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:130)
+	at nextflow.script.BaseScript.process(BaseScript.groovy:115)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:193)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:61)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallCurrent(CallSiteArray.java:51)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:171)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:194)
+	at Script_47329e55.runScript(Script_47329e55:26)
+	at nextflow.script.BaseScript.runDsl1(BaseScript.groovy:164)
+	at nextflow.script.BaseScript.run(BaseScript.groovy:217)
+	at nextflow.script.ScriptParser.runScript(ScriptParser.groovy:230)
+	at nextflow.script.ScriptRunner.run(ScriptRunner.groovy:225)
+	at nextflow.script.ScriptRunner.execute(ScriptRunner.groovy:131)
+	at nextflow.cli.CmdRun.run(CmdRun.groovy:354)
+	at nextflow.cli.Launcher.run(Launcher.groovy:487)
+	at nextflow.cli.Launcher.main(Launcher.groovy:646)
