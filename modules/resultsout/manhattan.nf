@@ -1,11 +1,13 @@
 process MANHATTAN {
-    scratch true
+  scratch true
   label 'medium'
 
-  publishDir "${OUTPUT_DIR}/${params.out}_${params.datetime}/plots", mode: 'copy', overwrite: true
+  //publishDir "${OUTPUT_DIR}/${params.dataset}/RESULTS/", mode: 'copy', overwrite: true
+  publishDir "${OUTPUT_DIR}/${params.dataset}/RESULTS/${model}_MANHATTAN_${params.datetime}", mode: 'copy', overwrite: true
 
   input:
     path x //from gwas_results.mix(sumstats_out).collect()
+    val(model)
   output:
     path "*.png" //into gwas_plots
 
@@ -24,17 +26,18 @@ process MANHATTAN {
   
     # group by phenotype
     lt_flag = "${params.longitudinal_flag}" == "true"
-    suffix = "${params.out}"
-    threads = int("${task.cpus}")
-
+    
     if "${params.survival_flag}" == "true":
       gwasname = "CPH"
     else:
       gwasname = "GLM"
 
+    suffix = "${params.out}"
+    threads = int("${task.cpus}")
 
     def plot_summary_stats(data, cohort, outcome, lt_flag=False):
-      xtick = set(['chr' + i for i in list(map(str, range(1, 10))) + ['11', '13', '15', '18', '21', 'X']])
+      xtick = set(['chr' + i for i in list(map(str, range(1, 10))) + ['11', '13', '15', '18', '21', '22']])
+      #xtick = set(['chr' + i for i in list(map(str, range(1, 10))) + ['11', '13', '15', '18', '21', 'X']])
       if lt_flag:
         f, ax = plt.subplots(figsize=(6, 6), facecolor="w", edgecolor="k")
         manhattanplot(data=data,
@@ -68,10 +71,13 @@ process MANHATTAN {
         plt.savefig(f"{cohort}_{outcome}_qq_intercept.{gwasname}.png", dpi=300)
 
     plot_df = dict()
+    
     for f in files:
       fc = f.split('.')
       pheno = fc[-2]
-      cohort = '_'.join(fc[0].split('_')[:-1])
+      cohort = fc[0][0:fc[0].find('chr')]
+      if cohort[-1] == '_':
+        cohort = cohort[:-1]
       try:
         plot_df[f'{cohort}+{pheno}'].append(f)
       except KeyError:
@@ -87,21 +93,18 @@ process MANHATTAN {
         df = pd.DataFrame()
       return df
 
-
     for cohort in plot_df.keys():
       df = None
       c, outcome = cohort.split('+')
       
       with Pool(processes=threads) as pool:
-
         # have your pool map the file names to dataframes
         df_list = pool.map(read_table, plot_df[cohort])
-
         # reduce the list of dataframes to a single dataframe
-        df = pd.concat(df_list, ignore_index=True)
       
+      df = pd.concat(df_list, ignore_index=True)
       df = df.dropna(how="any", axis=0)  # clean data
-      
+
       if df.shape[0] == 0:
         continue
 
