@@ -1,4 +1,3 @@
-
 # Dockerfile adapted from https://github.com/docker-library/python
 # for building python v3.8 some dependencies are not required and 
 # can be removed when compiling python
@@ -370,3 +369,17 @@ RUN set -ex \
   apt-get install -y --no-install-recommends \
     r-base \
   && Rscript -e 'install.packages(c("survival", "optparse"), repos="https://cloud.r-project.org")'
+
+# Get pkgs for gsutil to install successfully
+RUN set -eux; \
+        apt-get update; \
+        apt-get install -y --no-install-recommends \
+          apt-transport-https \
+          ca-certificates \
+          gnupg \
+          curl
+
+# Install gsutil
+RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list \
+    && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg  add - \
+    && apt-get update -y && apt-get install google-cloud-cli -y
