@@ -2,10 +2,10 @@
 process COMPUTE_PCA {
   scratch true
   label 'large_mem'
-   
+
   storeDir "${STORE_DIR}/${params.dataset}/p3_PCA_QC/"
-  publishDir "${OUTPUT_DIR}/${params.dataset}/MERGER_SPLITS_LOGS_${params.datetime}/logs", mode: 'copy', overwrite: true, pattern: "*.log"
-  
+  publishDir "${OUTPUT_DIR}/${params.dataset}/LOGS/COMPUTE_PCA_${params.datetime}/", mode: 'copy', overwrite: true, pattern: "*.log"
+
   input:
     each file(samplelist) //from gwas_samplelist.flatten()
     file "*" //from input_p3_pca.collect()

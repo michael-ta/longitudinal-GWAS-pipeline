@@ -1,7 +1,7 @@
 process GWASQC {
   //scratch true
   storeDir "${STORE_DIR}/${params.dataset}/p2_qc_pipeline_cache"
-  publishDir "${OUTPUT_DIR}/${params.dataset}/GWASQC_${params.datetime}/plots", mode: 'copy', overwrite: true, pattern: "*.{html,png}"
+  publishDir "${OUTPUT_DIR}/${params.dataset}/PLOTS/GWASQC_PLOTS_${params.datetime}/", mode: 'copy', overwrite: true, pattern: "*.{html,png}"
   label 'large_mem'
   
   input:

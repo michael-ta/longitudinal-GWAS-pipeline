@@ -1,9 +1,10 @@
 process SAVEGWAS {
   scratch true
-  publishDir "${OUTPUT_DIR}/${params.out}_${params.datetime}", mode: 'copy', overwrite: true
+  publishDir "${OUTPUT_DIR}/${params.dataset}/RESULTS/${model}_${params.datetime}", mode: 'copy', overwrite: true
   
   input:
-    path(sumstats) 
+    path(sumstats)
+    val(model)
     
   output:
     path(sumstats) //into sumstats_out

@@ -8,12 +8,13 @@ include { MANHATTAN }       from '../modules/resultsout/manhattan.nf'
 workflow SAVE_RESULTS {
     take:
         gwas
-
+        model
+        
     main:
 
-        SAVEGWAS(gwas)
-        
+        SAVEGWAS(gwas, model)
+
         if ( params.mh_plot ) {
-            MANHATTAN(SAVEGWAS.out.collect())
+            MANHATTAN(SAVEGWAS.out.collect(), model)
         }
 }

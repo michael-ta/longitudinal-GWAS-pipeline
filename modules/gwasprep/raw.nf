@@ -2,8 +2,8 @@
 process RAWFILE_EXPORT {
   scratch true
   label 'small'
-  publishDir "${OUTPUT_DIR}/${params.out}_${params.datetime}/logs", mode: 'copy', overwrite: true, pattern: "*.log"
-
+  publishDir "${OUTPUT_DIR}/${params.dataset}/LOGS/RAWFILE_EXPORT_${params.datetime}/", mode: 'copy', overwrite: true, pattern: "*.log"
+  
   input:
     tuple val(fSimple), path(plog), path(pgen), path(psam), path(pvar), path(plink_chunk) //from p3_plink_chunks
     each path(samplelist) //from gwas_samplelist_gallop.flatten()

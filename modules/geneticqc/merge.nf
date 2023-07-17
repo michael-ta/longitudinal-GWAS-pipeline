@@ -1,7 +1,7 @@
 process MERGER_SPLITS {
   scratch true
   storeDir "${STORE_DIR}/${params.dataset}/p1_run_cache"
-  publishDir "${OUTPUT_DIR}/${params.dataset}/MERGER_SPLITS_LOGS_${params.datetime}/logs", mode: 'copy', overwrite: true, pattern: "*.log"
+  publishDir "${OUTPUT_DIR}/${params.dataset}/LOGS/MERGER_SPLITS_${params.datetime}/", mode: 'copy', overwrite: true, pattern: "*.log"
   label 'small'
 
   input:

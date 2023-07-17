@@ -44,13 +44,13 @@ params.mh_plot = false
  * Main workflow log
  */
 if ( params.longitudinal_flag) {
-    MODEL = "LMM GALLOP"
+    MODEL = "LMM_GALLOP"
 } 
 else if ( params.survival_flag ) {
-    MODEL = "Cox model"
+    MODEL = "Cox_model"
 }
 else {
-    MODEL = "Cox model"
+    MODEL = "GLM_model"
 }
 
 log.info """\
@@ -112,5 +112,5 @@ workflow {
           GWASDATA_PREP.out.CHUNKS, 
           GWASDATA_PREP.out.PLINK_SLIST)
 
-  SAVE_RESULTS(GWAS_RUN.out)
+  SAVE_RESULTS(GWAS_RUN.out, MODEL)
 }
