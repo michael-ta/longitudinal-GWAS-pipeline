@@ -28,7 +28,7 @@ workflow GWASDATA_PREP {
 
             qcworkflow.out.gallopplink
             //.cross(GALLOPCOX_INPUT.out.splitText())
-                .cross(GALLOPCOX_INPUT.out)
+                .cross(GALLOPCOX_INPUT.out.splitText(file: true))
                 .flatten()
                 .collate(7)
                 .map{ it -> tuple(it[0], it[1], it[2], it[3], it[4], it[6]) } 
