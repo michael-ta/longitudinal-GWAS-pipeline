@@ -52,7 +52,7 @@ process EXPORT_PLINK {
   label 'small'
 
   input:
-    val samplelist //from gwas_samplelist_plink.flatten()
+    path samplelist //from gwas_samplelist_plink.flatten()
     path x, stageAs: 'phenotypes.tsv' //from "${params.phenofile}"
   output:
     path "*_analyzed.tsv" optional true //into plink_samplelist
