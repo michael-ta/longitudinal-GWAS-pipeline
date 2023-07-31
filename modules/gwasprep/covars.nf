@@ -7,11 +7,11 @@ process COMPUTE_PCA {
   publishDir "${OUTPUT_DIR}/${params.dataset}/LOGS/COMPUTE_PCA_${params.datetime}/", mode: 'copy', overwrite: true, pattern: "*.log"
 
   input:
-    each file(samplelist) //from gwas_samplelist.flatten()
-    file "*" //from input_p3_pca.collect()
+    each path(samplelist) //from gwas_samplelist.flatten()
+    path "*" //from input_p3_pca.collect()
     
   output:
-    tuple file(samplelist), file("${cohort_prefix}.pca.eigenvec"), emit: eigenvec //into p3_cohort_pca_processed
+    tuple path(samplelist), path("${cohort_prefix}.pca.eigenvec"), emit: eigenvec //into p3_cohort_pca_processed
     //tuple file("*.log") file("*.eigenval") //into p3_cohort_pca_logs
     //file "*.eigenval", emit: eigenvalues //into p3_cohort_pca_eval
     //file "*.log", emit: logs
@@ -48,10 +48,10 @@ process MERGE_PCA {
   label 'small'
   
   input:
-    tuple file(samplelist), file(cohort_pca) //from p3_cohort_pca_processed
+    tuple path(samplelist), path(cohort_pca) //from p3_cohort_pca_processed
   
   output:
-    file "${params.ancestry}_*_filtered.pca.tsv" //into p3_merge_pca_processed
+    path "${params.ancestry}_*_filtered.pca.tsv" //into p3_merge_pca_processed
   
   script:
     """
