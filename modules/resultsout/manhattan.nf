@@ -21,7 +21,7 @@ process MANHATTAN {
     from qmplot import qqplot
     from multiprocessing import Pool
 
-    files = list(filter(lambda x: os.path.splitext(x)[-1] in ['.gallop', '.linear'], os.listdir()))
+    files = list(filter(lambda x: os.path.splitext(x)[-1] in ['.gallop', '.linear', '.coxph'], os.listdir()))
     dfs = []
   
     # group by phenotype
