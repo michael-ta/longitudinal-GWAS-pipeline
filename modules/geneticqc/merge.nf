@@ -42,7 +42,7 @@ process MERGER_CHRS {
   scratch true
   storeDir "${STORE_DIR}/${params.dataset}/p2_merged_cache"
   //publishDir "${OUTPUT_DIR}/${params.out}_${params.datetime}/logs", mode: 'copy', overwrite: true, pattern: "*.log"
-  publishDir "${OUTPUT_DIR}/${params.dataset}/MERGER_CHRS_LOGS_${params.datetime}/logs", mode: 'copy', overwrite: true, pattern: "*.log"
+  publishDir "${OUTPUT_DIR}/${params.dataset}/LOGS/MERGER_CHRS_LOGS_${params.datetime}/logs", mode: 'copy', overwrite: true, pattern: "*.log"
   
   label 'large_mem'
 
