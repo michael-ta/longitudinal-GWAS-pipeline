@@ -9,12 +9,10 @@ workflow SAVE_RESULTS {
     take:
         gwas
         model
-        
     main:
-
         SAVEGWAS(gwas, model)
 
         if ( params.mh_plot ) {
-            MANHATTAN(SAVEGWAS.out.collect(), model)
+            MANHATTAN(SAVEGWAS.out.res_split.collect(), model)
         }
 }
