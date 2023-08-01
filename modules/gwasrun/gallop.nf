@@ -3,21 +3,23 @@ process GWASGALLOP {
   scratch true
   label 'medium'
 
-  //publishDir "${OUTPUT_DIR}/${params.out}_${params.datetime}", mode: 'copy', overwrite: true
-
   input:
     tuple val(fSimple), path(samplelist), path(rawfile) //from gwas_rawfile_gallop
     path x, stageAs: 'phenotypes.tsv' //from "${params.phenofile}"
-  
+
   output:
     tuple env(KEY), path("*.gallop") //into gallop_results
-  
+
   script:
     def m = []
     def cohort = rawfile.getName()
     m = cohort =~ /(.*).raw/
     outfile = "${m[0][1]}.${params.out}"
 
+    def getkey = []
+    def uniqpheno = samplelist.getName()
+    getkey = uniqpheno =~ /(.*)_filtered.pca.tsv/
+    //println getkey
 
     def model = ""
     def pheno_name = ""
@@ -26,7 +28,7 @@ process GWASGALLOP {
     if (params.model != '') {
       model = "--model '${params.model}'"
     }
-    
+
     if (params.pheno_name != '') {
       pheno_name = "--pheno-name '${params.pheno_name}'"
     }
@@ -37,7 +39,8 @@ process GWASGALLOP {
 
     """
     set -x
-    KEY="${cohort}_${fSimple}"
+    KEY="${getkey[0][1]}"
+
     gallop --gallop \
            --rawfile ${rawfile} \
            --pheno "phenotypes.tsv" \

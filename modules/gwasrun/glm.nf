@@ -2,7 +2,6 @@
 process GWASGLM {
   scratch true
   label 'medium'
-  publishDir "${OUTPUT_DIR}/${params.out}_${params.datetime}/logs", mode: 'copy', overwrite: true, pattern: "*.log"
 
   input:
     tuple val(fSimple), path(plog), path(pgen), path(psam), path(pvar) //from p3_in_files_plink
@@ -10,15 +9,14 @@ process GWASGLM {
   output:
     tuple env(KEY), path("*.linear")
 
-
   script:
     def covariates = "${params.covariates}".replaceAll(/ /, ",")
     def m = []
     def cohort = samplelist.getName()
     m = cohort =~ /(.*)_analyzed.tsv/
     cohort = m[0][1]
-    
-    def outfile = "${cohort}_${fSimple}.${params.out}"      
+  
+    def outfile = "${cohort}_${fSimple}.${params.out}"
 
     def pheno_name = "y"
     if (params.pheno_name != '') {
@@ -27,7 +25,7 @@ process GWASGLM {
 
     """
     set -x
-    KEY="${cohort}_${fSimple}"
+    KEY="${cohort}"
 
     plink2 --pfile ${fSimple} \
            --glm hide-covar omit-ref cols=+beta,+a1freq \
