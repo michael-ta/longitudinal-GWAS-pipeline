@@ -1,6 +1,6 @@
 process GWASCPH {
   scratch true
-  label 'small'
+  label 'medium'
 
   input:
     tuple val(fSimple), path(samplelist), path(rawfile) //from gwas_rawfile_coxph
