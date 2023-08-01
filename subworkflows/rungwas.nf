@@ -26,12 +26,18 @@ workflow GWAS_RUN {
         }
 
         GWASRES
-            .groupTuple()
-            .map{ it[1] }
-            .flatten()
-            .collectFile(keepHeader: true)
-            .set {RESULTS}
+            .groupTuple(sort: true)
+            .collect()
+            .set { GROUP_RESULTS }
+       //GROUP_RESULTS.view()
+       //GWASRES
+       //     .groupTuple()
+       //     .map{ it[1] }
+       //     .flatten()
+       //    .collectFile(keepHeader: true)
+       //    .set { RESULTS }
 
     emit:
-        RESULTS = RESULTS
+        //RESULTS = RESULTS
+        RESULTS = GROUP_RESULTS
 }
