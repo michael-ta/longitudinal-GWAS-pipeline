@@ -27,7 +27,7 @@ workflow GWAS_RUN {
 
         GWASRES
             .groupTuple(sort: true)
-            .collect()
+            //.collect()
             .set { GROUP_RESULTS }
        //GROUP_RESULTS.view()
        //GWASRES
