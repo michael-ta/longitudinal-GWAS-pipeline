@@ -87,21 +87,15 @@ workflow DOQC {
         // RUN THE GENOTYPE DATA QC
         GENETICQC( input_p1_run_ch )
 
-        // Generate some channels we will need downstream
-        GENETICQC.out.snpchunks_qc
-            .groupTuple(by: 0)
-            .flatten()
-            .collate(5)
-            .set { gwasinput_genetic }
-
         GENETICQC.out.snpchunks_names
             .collectFile( newLine: true ) 
                             { vSimple, prefix -> ["${vSimple}.mergelist.txt", prefix] }
             .set{ chunknames }
 
-
         // DO ALL THE MERGING AFTER SPLITTING TO HANDLE BIG DATA MEMORY HUNTING
-        MERGER_SPLITS(chunknames, GENETICQC.out.snpchunks_qc.collect())
+        //MERGER_SPLITS(chunknames, GENETICQC.out.snpchunks_qc.collect())
+        MERGER_SPLITS(chunknames, GENETICQC.out.snpchunks_merge.collect())
+        
         MERGER_SPLITS.out
             .collect()
             .flatten()

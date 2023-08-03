@@ -31,7 +31,8 @@ process GENETICQC {
   input:
     tuple val(vSimple), path(fOrig), path(fSplit) //from input_p1_run_ch
   output:
-    tuple file("${output}.pgen"), file("${output}.pvar"), file("${output}.psam"), emit: snpchunks_qc //into p1_run_processed_ch
+    //tuple file("${output}.pgen"), file("${output}.pvar"), file("${output}.psam"), emit: snpchunks_qc
+    tuple file("${output}.bed"), file("${output}.bim"), file("${output}.fam"), emit: snpchunks_merge  //into p1_run_processed_ch
     tuple val(vSimple), val("${output}"), emit: snpchunks_names //into p1_run_chunklist_ch
 
   script:
@@ -75,5 +76,9 @@ process GENETICQC {
     ${params.assembly} \
     ${chrnum} \
     ${prefix}
+  
+  plink2 --pfile ${output} \
+        --make-bed \
+        --out ${output}
   """
 }
