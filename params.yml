@@ -1,30 +1,30 @@
 ---
 # Input files
-input: /home/amcalejandro/Data/WorkingDirectory/Development_Stuff/LONGWAS-NEXTFLOW/workdir/example/genotype/chr*.vcf
-covarfile: /home/amcalejandro/Data/WorkingDirectory/Development_Stuff/LONGWAS-NEXTFLOW/workdir/example/covariates.tsv
-phenofile: /home/amcalejandro/Data/WorkingDirectory/Development_Stuff/LONGWAS-NEXTFLOW/workdir/example/phenotype.surv.tsv
+input: /home/amcalejandro/Data/WorkingDirectory/Development_Stuff/LONGWAS-NEXTFLOW/WORKSHOP/workdir/longitudinal-GWAS-pipeline/example/genotype/chr[1-3].vcf
+covarfile: /home/amcalejandro/Data/WorkingDirectory/Development_Stuff/LONGWAS-NEXTFLOW/WORKSHOP/workdir/longitudinal-GWAS-pipeline/example/covariates.tsv
+phenofile: /home/amcalejandro/Data/WorkingDirectory/Development_Stuff/LONGWAS-NEXTFLOW/WORKSHOP/workdir/longitudinal-GWAS-pipeline/example/phenotype.surv.tsv
 
 #Variables names
 pheno_name: surv_y
 covariates: "SEX age_at_baseline"
+#study_col: surv_y
+time_col: study_days
 
 # Model variables
 longitudinal_flag: false
 survival_flag: true
-params.linear_flag: false
-params.chunk_flag: false
+linear_flag: false
+chunk_flag: true
 
 # Parameters for genetic QC
-params.r2thres: -9
-params.minor_allele_freq: "0.05"
-params.minor_allele_ct: "20"
-params.kinship: "0.177"
-params.ancestry: "EUR"
-params.assembly: "hg38"
+r2thres: -9
+minor_allele_freq: "0.05"
+minor_allele_ct: "20"
+kinship: "0.177"
+ancestry: "EUR"
 assembly: "hg19"
-
 #Identifier for the input genotype files - useful to cache results
-dataset: "V1"
+dataset: "V2_SURV"
 
 # Generate manhattan with result files
 mh_plot: true
