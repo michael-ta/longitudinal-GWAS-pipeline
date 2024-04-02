@@ -8,11 +8,13 @@ include { GWASGLM  }        from '../modules/gwasrun/glm.nf'
 
 workflow GWAS_RUN {
     take:
-        phenos
+        phenfile
+        phennames
         gwaschunks
         glm_slist
 
     main:
+        //phenoname_list = phennames.split(',')
         if ( params.longitudinal_flag) {
             GWASGALLOP(gwaschunks, phenos)
             GWASRES = GWASGALLOP.out
@@ -21,7 +23,8 @@ workflow GWAS_RUN {
             GWASCPH(gwaschunks, phenos)
             GWASRES = GWASCPH.out
         } else {
-            GWASGLM(gwaschunks, glm_slist)
+            GWASGLM(gwaschunks, glm_slist, phennames)
+            //GWASGLM(gwaschunks, glm_slist)
             GWASRES = GWASGLM.out
         }
 
@@ -29,7 +32,6 @@ workflow GWAS_RUN {
             .groupTuple(sort: true)
             //.collect()
             .set { GROUP_RESULTS }
-       //GROUP_RESULTS.view()
        //GWASRES
        //     .groupTuple()
        //     .map{ it[1] }

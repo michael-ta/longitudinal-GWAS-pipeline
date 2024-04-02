@@ -100,6 +100,15 @@ Channel
 
 
 /* 
+ * Get the phenotypes arg on a channel
+ */
+Channel
+    .of( params.pheno_name )
+    .splitCsv(header: false)
+    .collect()
+    .set{ phenonames }
+
+/* 
  * main script flow
  */
 workflow {
@@ -108,9 +117,10 @@ workflow {
 
   GWASDATA_PREP(params.covarfile, DOQC)
   
-  GWAS_RUN(params.phenofile, 
-          GWASDATA_PREP.out.CHUNKS, 
-          GWASDATA_PREP.out.PLINK_SLIST)
+  GWAS_RUN(params.phenofile,
+           phenonames,
+           GWASDATA_PREP.out.CHUNKS,
+           GWASDATA_PREP.out.PLINK_SLIST)
 
   SAVE_RESULTS(GWAS_RUN.out, MODEL)
 }
