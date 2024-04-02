@@ -16,11 +16,11 @@ workflow GWAS_RUN {
     main:
         //phenoname_list = phennames.split(',')
         if ( params.longitudinal_flag) {
-            GWASGALLOP(gwaschunks, phenos)
+            GWASGALLOP(gwaschunks, phenfile)
             GWASRES = GWASGALLOP.out
         }
         else if ( params.survival_flag ) {
-            GWASCPH(gwaschunks, phenos)
+            GWASCPH(gwaschunks, phenfile)
             GWASRES = GWASCPH.out
         } else {
             GWASGLM(gwaschunks, glm_slist, phennames)
