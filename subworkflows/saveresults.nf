@@ -11,8 +11,7 @@ workflow SAVE_RESULTS {
         model
     main:
         SAVEGWAS(gwas, model)
-
         if ( params.mh_plot ) {
-            MANHATTAN(SAVEGWAS.out.res_split.collect(), model)
+            MANHATTAN(SAVEGWAS.out.res_all.collect(), model)
         }
 }

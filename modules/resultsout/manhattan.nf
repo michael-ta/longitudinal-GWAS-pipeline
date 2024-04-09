@@ -2,117 +2,100 @@ process MANHATTAN {
   scratch true
   label 'medium'
 
-  //publishDir "${OUTPUT_DIR}/${params.dataset}/RESULTS/", mode: 'copy', overwrite: true
   publishDir "${OUTPUT_DIR}/${params.dataset}/RESULTS/${model}_MANHATTAN_${params.datetime}", mode: 'copy', overwrite: true
 
   input:
-    path x //from gwas_results.mix(sumstats_out).collect()
+    each x
     val(model)
   output:
-    path "*.png" //into gwas_plots
+    path "*.png"
 
   script:
-    """
-    #!/usr/bin/env python3
-    import pandas as pd
-    import matplotlib.pyplot as plt
-    import os
-    from qmplot import manhattanplot
-    from qmplot import qqplot
-    from multiprocessing import Pool
+  """
+  #!/usr/bin/env python3
+  import pandas as pd
+  import matplotlib.pyplot as plt
+  import os
+  from qmplot import manhattanplot
+  from qmplot import qqplot
 
-    files = list(filter(lambda x: os.path.splitext(x)[-1] in ['.gallop', '.linear', '.coxph'], os.listdir()))
-    dfs = []
-  
-    # group by phenotype
-    lt_flag = "${params.longitudinal_flag}" == "true"
+  def plot_summary_stats(data, cohort, outcome, model):
+    xtick = set(['chr' + i for i in list(map(str, range(1, 14))) + ['15', '17', '19', '22']])
+
+    if model == "lmm_gallop":
+      f, ax = plt.subplots(figsize=(15, 7), facecolor="w", edgecolor="k")
+      manhattanplot(data=data,
+                    title=f"Manhattan Intercept {cohort} {outcome}",
+                    pv="Pi", ax = ax, 
+                    xtick_label_set=xtick)
+      plt.savefig(f"{cohort}_{outcome}_manhattan_intercept.{model}.png", dpi=300)
+      f, ax = plt.subplots(figsize=(15, 7), facecolor="w", edgecolor="k")
+      qqplot(data=data["Pi"],
+              marker="o",
+              title=f"QQ Intercept {cohort} {outcome}",
+              xlabel=r"Expected -log(P)",
+              ylabel=r"Observed -log(P)",
+              ax=ax)
+      plt.savefig(f"{cohort}_{outcome}_qq_intercept.{model}.png", dpi=300)
+      
+      f, ax = plt.subplots(figsize=(15, 7), facecolor="w", edgecolor="k")
+      manhattanplot(data=data,
+                    title=f"Manhattan Slope {cohort} {outcome}",
+                    pv="P", ax = ax, 
+                    xtick_label_set=xtick)
+      plt.savefig(f"{cohort}_{outcome}_manhattan_slope.{model}.png", dpi=300)
+      f, ax = plt.subplots(figsize=(10, 7), facecolor="w", edgecolor="k")
+      qqplot(data=data["Pi"],
+              marker="o",
+              title=f"QQ Slope {cohort} {outcome}",
+              xlabel=r"Expected -log(P)",
+              ylabel=r"Observed -log(P)",
+              ax=ax)
+      plt.savefig(f"{cohort}_{outcome}_qq_slope.{model}.png", dpi=300)
     
-    if "${params.survival_flag}" == "true":
-      gwasname = "CPH"
+    elif model in ["glm","cph"]:
+      f, ax = plt.subplots(figsize=(15, 7), facecolor="w", edgecolor="k")
+      manhattanplot(data=data,
+                    title=f"Manhattan {model} {cohort} {outcome}",
+                    pv="P", ax = ax,
+                    xtick_label_set=xtick)
+      plt.savefig(f"{cohort}_{outcome}_manhattan.{model}.png", dpi=300)
+      f, ax = plt.subplots(figsize=(10, 7), facecolor="w", edgecolor="k")
+      qqplot(data=data["P"],
+              marker="o",
+              title=f"QQ {model} {cohort} {outcome}",
+              xlabel=r"Expected -log(P)",
+              ylabel=r"Observed -log(P)",
+              ax=ax)
+      plt.savefig(f"{cohort}_{outcome}_qq.{model}.png", dpi=300)
+    
     else:
-      gwasname = "GLM"
-
-    suffix = "${params.out}"
-    threads = int("${task.cpus}")
-
-    def plot_summary_stats(data, cohort, outcome, lt_flag=False):
-      xtick = set(['chr' + i for i in list(map(str, range(1, 10))) + ['11', '13', '15', '18', '21', '22']])
-      #xtick = set(['chr' + i for i in list(map(str, range(1, 10))) + ['11', '13', '15', '18', '21', 'X']])
-      if lt_flag:
-        f, ax = plt.subplots(figsize=(6, 6), facecolor="w", edgecolor="k")
-        manhattanplot(data=data,
-                      title=f"Manhattan Intercept {cohort} {outcome}",
-                      pv="Pi", ax = ax, 
-                      xtick_label_set=xtick)
-        plt.savefig(f"{cohort}_{outcome}_manhattan_intercept.gallop.png", dpi=300)
-        f, ax = plt.subplots(figsize=(6, 6), facecolor="w", edgecolor="k")
-        qqplot(data=data["Pi"],
-                marker="o",
-                title=f"QQ Intercept {cohort} {outcome}",
-                xlabel=r"Expected -log(P)",
-                ylabel=r"Observed -log(P)",
-                ax=ax)
-        plt.savefig(f"{cohort}_{outcome}_qq_intercept.gallop.png", dpi=300)
-  
-      else:
-        f, ax = plt.subplots(figsize=(6, 6), facecolor="w", edgecolor="k")
-        manhattanplot(data=data,
-                      title=f"Manhattan Intercept {cohort} {outcome}",
-                      pv="P", ax = ax,
-                      xtick_label_set=xtick)
-        plt.savefig(f"{cohort}_{outcome}_manhattan_intercept.{gwasname}.png", dpi=300)
-        f, ax = plt.subplots(figsize=(6, 6), facecolor="w", edgecolor="k")
-        qqplot(data=data["P"],
-               marker="o",
-               title=f"QQ Intercept {cohort} {outcome}",
-               xlabel=r"Expected -log(P)",
-               ylabel=r"Observed -log(P)",
-               ax=ax)
-        plt.savefig(f"{cohort}_{outcome}_qq_intercept.{gwasname}.png", dpi=300)
-
-    plot_df = dict()
+      print("Model flag not recognised")
+      return
     
-    for f in files:
-      fc = f.split('.')
-      pheno = fc[-2]
-      cohort = fc[0][0:fc[0].find('chr')]
-      if cohort[-1] == '_':
-        cohort = cohort[:-1]
-      try:
-        plot_df[f'{cohort}+{pheno}'].append(f)
-      except KeyError:
-        plot_df[f'{cohort}+{pheno}'] = [f]
+    print("Results plotting success") 
+  
+  # Get some metadata
+  threads = int("${task.cpus}")
+  suffix = "${params.out}"
+  model = "${model}"
+  
+  data_path = "${x}"
+  gwas_name = os.path.splitext(os.path.basename(data_path))[0].split('_')
+  pheno = gwas_name[-2]
+  cohort = gwas_name[1]
+  cohort_suffix = f"{cohort}.{suffix}" if suffix != "" else cohort
 
 
-    def read_table(fn):
-      'converts a filename to a pandas dataframe'
-      df = None
-      try:
-        df = pd.read_table(fn, sep="\t")
-      except pd.errors.EmptyDataError:
-        df = pd.DataFrame()
-      return df
-
-    for cohort in plot_df.keys():
-      df = None
-      c, outcome = cohort.split('+')
-      
-      with Pool(processes=threads) as pool:
-        # have your pool map the file names to dataframes
-        df_list = pool.map(read_table, plot_df[cohort])
-        # reduce the list of dataframes to a single dataframe
-      
-      df = pd.concat(df_list, ignore_index=True)
-      df = df.dropna(how="any", axis=0)  # clean data
-
-      if df.shape[0] == 0:
-        continue
-
-      df['chr_order'] = df['#CHROM'].str.replace('chr', '')
-      df['chr_order'] = df['chr_order'].astype(int)
-      df = df.sort_values(by=['chr_order', 'POS'])
-
-      # generate manhattan plot and set an output file.
-      plot_summary_stats(data=df, cohort=f'{c}.{suffix}', outcome=outcome, lt_flag=lt_flag)
-    """
+  # Prep data for plotting
+  df = pd.read_csv("${x}", sep="\\t", engine='c')
+  df = df.dropna(how="any", axis=0)  # clean data
+  df['chr_order'] = df['#CHROM'].str.replace('chr', '')
+  df['chr_order'] = df['chr_order'].astype(int)
+  df = df.sort_values(by=['chr_order', 'POS'])
+  
+  # generate manhattan plot and set an output file.
+  plot_summary_stats(data=df, cohort=f'{cohort_suffix}', outcome=pheno, model=model)
+  
+  """
 }

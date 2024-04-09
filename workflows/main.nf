@@ -44,13 +44,13 @@ params.mh_plot = false
  * Main workflow log
  */
 if ( params.longitudinal_flag) {
-    MODEL = "LMM_GALLOP"
+    MODEL = "lmm_gallop"
 } 
 else if ( params.survival_flag ) {
-    MODEL = "Cox_model"
+    MODEL = "cph"
 }
 else {
-    MODEL = "GLM_model"
+    MODEL = "glm"
 }
 
 log.info """\
