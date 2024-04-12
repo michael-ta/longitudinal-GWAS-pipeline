@@ -81,18 +81,17 @@ process EXPORT_PLINK {
     import pandas as pd
     import time
     import sys
-    #import os
 
-    #print(os.listdir())
-    covars = "${params.covariates}"
-    covars = covars.split(' ')
+    all_phenos = "${pheno_name}".split(',') if ',' in "${pheno_name}" else ["${pheno_name}"]
+    covars = "${params.covariates}".split(' ')
     d_pheno = pd.read_csv("phenotypes.tsv", sep="\t", engine='c')
     d_sample = pd.read_csv("${samplelist}", sep="\t", engine='c')
 
     d_result = pd.merge(d_pheno, d_sample, on='IID', how='inner')
 
     if d_result.shape[0] > 0:
-      d_set = d_result.loc[:, ["#FID", "IID", "${pheno_name}"] + covars].copy()
+      #d_set = d_result.loc[:, ["#FID", "IID", "${pheno_name}"] + covars].copy()
+      d_set = d_result.loc[:, ["#FID", "IID"] + all_phenos + covars].copy()
       d_set.to_csv("${outfile}_analyzed.tsv", sep="\t", index=False)
 
     time.sleep(10)
