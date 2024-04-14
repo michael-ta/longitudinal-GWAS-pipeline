@@ -18,6 +18,7 @@ process MANHATTAN {
   import os
   from qmplot import manhattanplot
   from qmplot import qqplot
+  import re
 
   def plot_summary_stats(data, cohort, outcome, model):
     xtick = set(['chr' + i for i in list(map(str, range(1, 14))) + ['15', '17', '19', '22']])
@@ -44,7 +45,7 @@ process MANHATTAN {
                     pv="P", ax = ax, 
                     xtick_label_set=xtick)
       plt.savefig(f"{cohort}_{outcome}_manhattan_slope.{model}.png", dpi=300)
-      f, ax = plt.subplots(figsize=(10, 7), facecolor="w", edgecolor="k")
+      f, ax = plt.subplots(figsize=(15, 7), facecolor="w", edgecolor="k")
       qqplot(data=data["Pi"],
               marker="o",
               title=f"QQ Slope {cohort} {outcome}",
@@ -60,7 +61,7 @@ process MANHATTAN {
                     pv="P", ax = ax,
                     xtick_label_set=xtick)
       plt.savefig(f"{cohort}_{outcome}_manhattan.{model}.png", dpi=300)
-      f, ax = plt.subplots(figsize=(10, 7), facecolor="w", edgecolor="k")
+      f, ax = plt.subplots(figsize=(15, 7), facecolor="w", edgecolor="k")
       qqplot(data=data["P"],
               marker="o",
               title=f"QQ {model} {cohort} {outcome}",
@@ -81,11 +82,13 @@ process MANHATTAN {
   model = "${model}"
   
   data_path = "${x}"
-  gwas_name = os.path.splitext(os.path.basename(data_path))[0].split('_')
-  pheno = gwas_name[-2]
-  cohort = gwas_name[1]
+  gwas_name = os.path.splitext(os.path.basename(data_path))[0]
+  
+  cohort = gwas_name.split('_')[1]
+  find_phenoname = cohort + r'_(.*?)_allresults'
+  result = re.search(find_phenoname, gwas_name)
+  pheno = result.group(1)
   cohort_suffix = f"{cohort}.{suffix}" if suffix != "" else cohort
-
 
   # Prep data for plotting
   df = pd.read_csv("${x}", sep="\\t", engine='c')
