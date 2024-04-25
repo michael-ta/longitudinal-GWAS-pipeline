@@ -42,11 +42,11 @@ process MANHATTAN {
       f, ax = plt.subplots(figsize=(15, 7), facecolor="w", edgecolor="k")
       manhattanplot(data=data,
                     title=f"Manhattan Slope {cohort} {outcome}",
-                    pv="P", ax = ax, 
+                    pv="Ps", ax = ax, 
                     xtick_label_set=xtick)
       plt.savefig(f"{cohort}_{outcome}_manhattan_slope.{model}.png", dpi=300)
       f, ax = plt.subplots(figsize=(15, 7), facecolor="w", edgecolor="k")
-      qqplot(data=data["Pi"],
+      qqplot(data=data["Ps"],
               marker="o",
               title=f"QQ Slope {cohort} {outcome}",
               xlabel=r"Expected -log(P)",
