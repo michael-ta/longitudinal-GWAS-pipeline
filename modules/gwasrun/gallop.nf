@@ -4,22 +4,23 @@ process GWASGALLOP {
   label 'medium'
 
   input:
-    tuple val(fSimple), path(samplelist), path(rawfile) //from gwas_rawfile_gallop
-    path x, stageAs: 'phenotypes.tsv' //from "${params.phenofile}"
+    tuple val(fSimple), path(samplelist), path(rawfile)
+    path x, stageAs: 'phenotypes.tsv'
+    each phenoname
 
   output:
-    tuple env(KEY), path("*.gallop") //into gallop_results
+    tuple env(KEY), path("*.gallop")
 
   script:
     def m = []
-    def cohort = rawfile.getName()
-    m = cohort =~ /(.*).raw/
+    def outfile = rawfile.getName()
+    m = outfile =~ /(.*).raw/
     outfile = "${m[0][1]}.${params.out}"
 
     def getkey = []
-    def uniqpheno = samplelist.getName()
-    getkey = uniqpheno =~ /(.*)_filtered.pca.tsv/
-    //println getkey
+    def pop_pheno = samplelist.getName()
+    getkey = pop_pheno =~ /(.*)_filtered.pca.tsv/
+    pop_pheno = getkey[0][1]
 
     def model = ""
     def pheno_name = ""
@@ -29,24 +30,25 @@ process GWASGALLOP {
       model = "--model '${params.model}'"
     }
 
-    if (params.pheno_name != '') {
-      pheno_name = "--pheno-name '${params.pheno_name}'"
-    }
+    // if (params.pheno_name != '') {
+    //   pheno_name = "--pheno-name '${params.pheno_name}'"
+    // }
 
-    if (params.pheno_name_file != '') {
-      pheno_name_file = "--pheno-name-file '${params.pheno_name_file}'"
-    }
+    // if (params.pheno_name_file != '') {
+    //   pheno_name_file = "--pheno-name-file '${params.pheno_name_file}'"
+    // }
+
 
     """
     set -x
-    KEY="${getkey[0][1]}"
+    KEY="${pop_pheno}_${phenoname}"
 
     gallop --gallop \
            --rawfile ${rawfile} \
            --pheno "phenotypes.tsv" \
+           --pheno-name "${phenoname}" \
            --covar ${samplelist} \
            --covar-name ${params.covariates} \
-           ${model} ${pheno_name} ${pheno_name_file} \
            --time-name ${params.time_col} \
            --out "${outfile}"
     """

@@ -16,7 +16,7 @@ workflow GWAS_RUN {
     main:
         //phenoname_list = phennames.split(',')
         if ( params.longitudinal_flag) {
-            GWASGALLOP(gwaschunks, phenfile)
+            GWASGALLOP(gwaschunks, phenfile, phennames)
             GWASRES = GWASGALLOP.out
         }
         else if ( params.survival_flag ) {
