@@ -20,7 +20,7 @@ workflow GWAS_RUN {
             GWASRES = GWASGALLOP.out
         }
         else if ( params.survival_flag ) {
-            GWASCPH(gwaschunks, phenfile)
+            GWASCPH(gwaschunks, phenfile, phennames)
             GWASRES = GWASCPH.out
         } else {
             GWASGLM(gwaschunks, glm_slist, phennames)
