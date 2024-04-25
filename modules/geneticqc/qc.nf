@@ -69,7 +69,7 @@ process GENETICQC {
     cat $fSplit >> tmp_input.${ext}
   fi
 
-  /srv/GWAS-Pipeline/References/Scripts/process1.sh \
+  process1.sh \
     ${task.cpus} \
     tmp_input.${ext} \
     ${params.r2thres} \
