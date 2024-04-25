@@ -3,38 +3,38 @@ process GWASCPH {
   label 'medium'
 
   input:
-    tuple val(fSimple), path(samplelist), path(rawfile) //from gwas_rawfile_coxph
-    path x, stageAs: 'phenotypes.tsv' //from "${params.phenofile}"
+    tuple val(fSimple), path(samplelist), path(rawfile)
+    path x, stageAs: 'phenotypes.tsv'
+    each phenoname
 
   output:
-    tuple env(KEY), path("*.coxph") //into coxph_results
-    //path("*.coxph")
+    tuple env(KEY), path("*.coxph")
+  
   script:
     def m = []
-    def cohort = rawfile.getName()
-    m = cohort =~ /(.*).raw/
+    def outfile = rawfile.getName()
+    m = outfile=~ /(.*).raw/
     outfile = "${m[0][1]}.${params.out}.coxph"
 
     def getkey = []
-    def uniqpheno = samplelist.getName()
-    getkey = uniqpheno =~ /(.*)_filtered.pca.tsv/
-    //println getkey
+    def  pop_pheno = samplelist.getName()
+    getkey = pop_pheno =~ /(.*)_filtered.pca.tsv/
+    pop_pheno = getkey[0][1]
 
-    def pheno_name = ""
-    if (params.pheno_name != '') {
-      pheno_name = "--pheno-name '${params.pheno_name}'"
-    }
+    // def pheno_name = ""
+    // if (params.pheno_name != '') {
+    //   pheno_name = "--pheno-name '${params.pheno_name}'"
+    // }
 
     """
     set -x
-    #KEY="${cohort}_${fSimple}"
-    KEY="${getkey[0][1]}"
-    /srv/GWAS-Pipeline/References/Scripts/survival.R \
-               --rawfile ${rawfile} \
+    KEY="${pop_pheno}_${phenoname}"
+    
+    survival.R --rawfile ${rawfile} \
                --pheno "phenotypes.tsv" \
                --covar ${samplelist} \
                --covar-name "${params.covariates}" \
-               ${pheno_name} \
+               --pheno-name "${phenoname}" \
                --out ${outfile}
     """
 }
