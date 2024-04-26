@@ -281,7 +281,6 @@ RUN set -ex; \
   apt-get install -y --no-install-recommends wget; \
   \
   mkdir -p $GWAS_RESOURCE_DIR/References/Genome; \
-  mkdir -p $GWAS_RESOURCE_DIR/References/Scripts; \
   mkdir -p $GWAS_RESOURCE_DIR/References/liftOver; \
   mkdir -p $GWAS_RESOURCE_DIR/References/ref_panel; \
   \
@@ -298,15 +297,11 @@ RUN set -ex; \
 ARG BUILD_VER=""
 
 COPY References/ancestry_ref_panel.tar.gz /root
-COPY Scripts/process1.sh $GWAS_RESOURCE_DIR/References/Scripts
-COPY Scripts/survival.R $GWAS_RESOURCE_DIR/References/Scripts
 
 
 RUN set -ex; \
   tar -xvzf /root/ancestry_ref_panel.tar.gz -C $GWAS_RESOURCE_DIR/References/ref_panel --no-same-owner; \
-  rm /root/ancestry_ref_panel.tar.gz; \
-  chmod +x $GWAS_RESOURCE_DIR/References/Scripts/process1.sh; \
-  chmod +x $GWAS_RESOURCE_DIR/References/Scripts/survival.R
+  rm /root/ancestry_ref_panel.tar.gz
 
 ENV IMAGE_BUILD_VER=$BUILD_VER
 ARG PY_GALLOP_URL="https://github.com/michael-ta/GALLOP-Python"
