@@ -52,7 +52,7 @@ _Note:_ invoking sudo is not necessary if the Docker user has been previously ad
 ## Basic Usage
 
 Once the Docker image is built, the pipeline can be called by running the following command within the local 
-cloned irepository
+cloned repository
 
 ```sh
 sudo nextflow gwas-pipeline.nf \
