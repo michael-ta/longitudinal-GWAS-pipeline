@@ -13,7 +13,7 @@ nextflow.enable.dsl = 2
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { GWAS } from './workflows/gwas.nf'
+include { GWAS } from './workflows/gwas'
 
 //
 // WORKFLOW: Run main longwas analysis pipeline
