@@ -78,7 +78,7 @@ Channel
 /* 
  * main script flow
  */
-workflow {
+workflow GWAS {
   
   DOQC( input_check_ch, cache )
 
